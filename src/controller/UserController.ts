@@ -1,13 +1,17 @@
-import { comparePassword, hashPassword } from './../utils/bcrypt'
+import { hashPassword } from './../utils/bcrypt'
 import { generateToken } from './../utils/jwt'
 import { getRepository, QueryFailedError } from 'typeorm'
 import { Context } from './../contextProps'
 import { User } from '../entity/User'
-import { onValidate } from '../utils/joi'
+import {
+  SaveValidator,
+  ExistValidator,
+  SignInValidator,
+} from '../validators/userValidator'
 
 export class UserController {
-  private repository = getRepository(User)
-
+  @SaveValidator()
+  @ExistValidator()
   async register({ req, res }: Context) {
     const {
       username,
@@ -17,36 +21,7 @@ export class UserController {
       last_name,
     } = req.body as User
 
-    const hasErrors = onValidate(
-      { username, password, email, first_name, last_name },
-      User.validatorRegister,
-    )
-
-    if (hasErrors) {
-      return res.status(400).send({ error: hasErrors, status: 400 })
-    }
-
-    const isUsernameExist = await this.repository
-      .find({ username })
-      .then((users) => users.length > 0)
-
-    if (isUsernameExist) {
-      return res
-        .status(400)
-        .send({ error: { username: 'Username is taken!' }, status: 400 })
-    }
-
-    const isEmailExist = await this.repository
-      .find({ email })
-      .then((users) => users.length > 0)
-
-    if (isEmailExist) {
-      return res
-        .status(400)
-        .send({ error: { email: 'Email is taken!' }, status: 400 })
-    }
-
-    const { id } = await this.repository
+    const { id } = await getRepository(User)
       .save({
         username,
         password: await hashPassword(password),
@@ -55,34 +30,18 @@ export class UserController {
         last_name,
       })
       .catch((error: QueryFailedError) => {
-        console.log(error)
-        return null
+        return { id: 0 }
       })
 
-    return { id }
+    return res.status(201).send({ id })
   }
 
+  @SignInValidator()
   async signin({ req, res }: Context) {
-    const { username, password } = req.body as User
+    const { username, id } = req.body.user as User
 
-    const hasErrors = onValidate({ username, password }, User.valitorSignin)
+    const token = generateToken({ username, id })
 
-    if (hasErrors) {
-      return res.status(400).send({ error: hasErrors, status: 400 })
-    }
-
-    const user = await this.repository.findOne({
-      username,
-    })
-
-    if (!user || !(await comparePassword(password, user.password))) {
-      return res
-        .status(401)
-        .send({ error: 'Invalid username or password', status: 401 })
-    }
-
-    const token = generateToken({ username: user.username, id: user.id })
-
-    return { token }
+    return res.status(201).send({ token })
   }
 }
