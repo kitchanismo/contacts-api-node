@@ -6,7 +6,6 @@ export class HomeController {
   async index({ res }: Context) {
     const routes = Routes.map((route) => {
       delete route.action
-      delete route.controller
       return route
     })
 
