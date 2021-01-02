@@ -34,7 +34,7 @@ export class User {
   @OneToMany((type) => Contact, (contact) => contact.user)
   contacts: Contact[]
 
-  static valitorSignin = {
+  static schemaSignIn = {
     username: Joi.string()
       .alphanum()
       .min(1)
@@ -44,8 +44,8 @@ export class User {
     password: Joi.string().min(8).max(65).required().label('Password'),
   }
 
-  static validatorRegister = {
-    ...User.valitorSignin,
+  static schemaRegister = {
+    ...User.schemaSignIn,
     first_name: lettersOnly('Firstname').min(2).max(255).required(),
     last_name: lettersOnly('Lastname').min(2).max(255).required(),
     email: Joi.string()

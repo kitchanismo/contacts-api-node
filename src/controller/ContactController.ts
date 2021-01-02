@@ -1,31 +1,26 @@
+import { Contact } from './../entity/Contact'
 import { User } from './../entity/User'
 import { getRepository } from 'typeorm'
 import { Context } from './../contextProps'
-import { Contact } from '../entity/Contact'
-import { onValidate } from '../utils/joi'
+import { ContactSaveValidator } from '../validators/contactValidator'
 
 export class ContactController {
-  private repository = getRepository(Contact)
-
   async all({ req }: Context) {
     const { userId } = req.body
 
-    const user = await this.getCurrentUser(+userId)
+    const user = await getRepository(User).findOne({ id: +userId })
 
-    return this.repository.find({ user })
-  }
-
-  async getCurrentUser(id: number) {
-    return getRepository(User).findOne({ id })
+    return getRepository(Contact).find({ user })
   }
 
   async one({ req, res }: Context) {
-    const contact = await this.repository.findOne(+req.params.id)
+    const contact = await getRepository(Contact).findOne(+req.params.id)
     return contact
       ? contact
       : res.status(404).send({ error: 'Not Found', status: 404 })
   }
 
+  @ContactSaveValidator()
   async save({ req, res }: Context) {
     const {
       first_name,
@@ -36,25 +31,9 @@ export class ContactController {
       is_favorite,
     } = req.body as Contact
 
-    const hasErrors = onValidate(
-      {
-        first_name,
-        last_name,
-        phone_number,
-        contact_picture,
-        country_code,
-        is_favorite,
-      },
-      Contact.validatorContact,
-    )
+    const user = await getRepository(User).findOne({ id: +req.body.userId })
 
-    if (hasErrors) {
-      return res.status(400).send({ error: hasErrors, status: 400 })
-    }
-
-    const user = await this.getCurrentUser(+req.body.userId)
-
-    const { id } = await this.repository
+    const { id } = await getRepository(Contact)
       .save({
         first_name,
         last_name,
@@ -66,9 +45,10 @@ export class ContactController {
       })
       .catch((error) => null)
 
-    return { id }
+    return res.status(201).send({ id })
   }
 
+  @ContactSaveValidator()
   async update({ req, res }: Context) {
     const {
       first_name,
@@ -78,23 +58,8 @@ export class ContactController {
       country_code,
       is_favorite,
     } = req.body as Contact
-    const hasErrors = onValidate(
-      {
-        first_name,
-        last_name,
-        phone_number,
-        contact_picture,
-        country_code,
-        is_favorite,
-      },
-      Contact.validatorContact,
-    )
 
-    if (hasErrors) {
-      return res.status(400).send({ error: hasErrors, status: 400 })
-    }
-
-    const { affected } = await this.repository.update(+req.params.id, {
+    const { affected } = await getRepository(Contact).update(req.params.id, {
       first_name,
       last_name,
       phone_number,
@@ -103,16 +68,18 @@ export class ContactController {
       is_favorite,
     })
 
-    return { affected }
+    if (!affected) return res.status(404).send({ status: 404, affected })
+
+    return res.status(202).send({ status: 202, affected })
   }
 
   async remove({ req, res }: Context) {
-    const contact = await this.repository.findOne(req.params.id)
+    const contact = await getRepository(Contact).findOne(+req.params.id)
     if (!contact)
       return res.status(404).send({ error: 'Not found', status: 404 })
 
-    await this.repository.remove(contact)
+    await getRepository(Contact).remove(contact)
 
-    return res.status(202).send({ status: 202 })
+    return res.status(202).send({ status: 202, affected: +req.params.id })
   }
 }

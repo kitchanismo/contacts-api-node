@@ -4,12 +4,8 @@ import { onValidate } from '../utils/joi'
 import { getRepository } from 'typeorm'
 import { comparePassword } from '../utils/bcrypt'
 
-export function SaveValidator() {
-  return function (
-    target: any,
-    propertyKey: string,
-    descriptor: PropertyDescriptor,
-  ) {
+export const RegisterValidator = () => {
+  return (target: any, propertyKey: string, descriptor: PropertyDescriptor) => {
     const method = descriptor.value
     descriptor.value = function (ctx: Context) {
       const { username, password, email, first_name, last_name } = ctx.req
@@ -17,7 +13,7 @@ export function SaveValidator() {
 
       const hasErrors = onValidate(
         { username, password, email, first_name, last_name },
-        User.validatorRegister,
+        User.schemaRegister,
       )
 
       if (hasErrors) {
@@ -39,7 +35,7 @@ export function SignInValidator() {
     descriptor.value = async function (ctx: Context) {
       const { username, password } = ctx.req.body as User
 
-      const hasErrors = onValidate({ username, password }, User.valitorSignin)
+      const hasErrors = onValidate({ username, password }, User.schemaSignIn)
 
       if (hasErrors) {
         return ctx.res.status(400).send({ error: hasErrors, status: 400 })
@@ -54,10 +50,7 @@ export function SignInValidator() {
           .status(401)
           .send({ error: 'Invalid username or password', status: 401 })
       }
-
-      ctx.req.body.user = user
-
-      method(ctx)
+      method(ctx, user)
     }
   }
 }

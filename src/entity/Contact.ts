@@ -28,7 +28,7 @@ export class Contact {
 
   @ManyToOne((type) => User, (user) => user.contacts) user: User
 
-  static validatorContact = {
+  static schemaContact = {
     id: Joi.optional(),
     first_name: lettersOnly('First Name').min(1).max(30).required(),
     last_name: lettersOnly('Last Name').min(1).max(30).required(),

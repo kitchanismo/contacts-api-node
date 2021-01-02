@@ -4,13 +4,13 @@ import { getRepository, QueryFailedError } from 'typeorm'
 import { Context } from './../contextProps'
 import { User } from '../entity/User'
 import {
-  SaveValidator,
+  RegisterValidator,
   ExistValidator,
   SignInValidator,
 } from '../validators/userValidator'
 
 export class UserController {
-  @SaveValidator()
+  @RegisterValidator()
   @ExistValidator()
   async register({ req, res }: Context) {
     const {
@@ -37,8 +37,8 @@ export class UserController {
   }
 
   @SignInValidator()
-  async signin({ req, res }: Context) {
-    const { username, id } = req.body.user as User
+  async signin({ req, res }: Context, user: User) {
+    const { username, id } = user
 
     const token = generateToken({ username, id })
 
