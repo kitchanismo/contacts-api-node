@@ -5,8 +5,10 @@ import { Routes } from '../routes'
 export class HomeController {
   async index({ res }: Context) {
     const routes = Routes.map((route) => {
-      delete route.action
-      return route
+      return {
+        method: route.method,
+        path: route.path,
+      }
     })
 
     return { server: 'online', routes }
