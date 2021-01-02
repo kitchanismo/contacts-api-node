@@ -25,7 +25,7 @@
       "typescript": "3.3.3333"
    },
    "scripts": {
-      "start": "ts-node src/index.ts",
+      "start": "ts-node ./src/index.ts",
       "watch": "nodemon --exec ts-node -- ./src/index.ts",
       "migration:run": "ts-node ./node_modules/typeorm/cli.js migration:run"
    },
