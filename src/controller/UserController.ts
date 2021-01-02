@@ -42,6 +42,6 @@ export class UserController {
 
     const token = generateToken({ username, id })
 
-    return res.status(201).send({ token })
+    return res.status(200).send({ token })
   }
 }
