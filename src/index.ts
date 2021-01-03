@@ -31,7 +31,7 @@ createConnection()
             result !== undefined &&
             typeof result === 'object'
               ? res.send(result)
-              : undefined,
+              : res.send({ error: 'return method must be an object' }),
           )
         } else if (result !== null && result !== undefined) {
           res.json(result)
