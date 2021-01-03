@@ -2,7 +2,7 @@ import { Contact } from './../entity/Contact'
 import { User } from './../entity/User'
 import { getRepository } from 'typeorm'
 import { Context } from './../contextProps'
-import { ContactSaveValidator } from '../validators/contactValidator'
+import { contactSaveValidator } from '../validators/contactValidator'
 
 export class ContactController {
   private contactRepository = getRepository(Contact)
@@ -23,7 +23,7 @@ export class ContactController {
       : res.status(404).send({ error: 'Not Found', status: 404 })
   }
 
-  @ContactSaveValidator()
+  @contactSaveValidator
   async save({ req, res }: Context) {
     const {
       first_name,
@@ -51,7 +51,7 @@ export class ContactController {
     return res.status(201).send({ id })
   }
 
-  @ContactSaveValidator()
+  @contactSaveValidator
   async update({ req, res }: Context) {
     const {
       first_name,
