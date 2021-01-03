@@ -39,8 +39,8 @@ export class UserController {
   }
 
   @SignInValidator()
-  async signin({ req, res }: Context, user: User) {
-    const { username, id } = user
+  async signin({ req, res }: Context) {
+    const { username, id } = req.body.user
 
     const token = generateToken({ username, id })
 
