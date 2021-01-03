@@ -2,14 +2,10 @@ import { Contact } from './../entity/Contact'
 import { onValidate } from '../utils/joi'
 import { Context } from './../contextProps'
 
-export function ContactSaveValidator() {
-  return function (
-    target: any,
-    propertyKey: string,
-    descriptor: PropertyDescriptor,
-  ) {
-    const method = descriptor.value
-    descriptor.value = (ctx: Context) => {
+export const ContactSaveValidator = () => {
+  return (target: any, propertyKey: string, descriptor: PropertyDescriptor) => {
+    let method = descriptor.value
+    descriptor.value = function (ctx: Context) {
       const {
         first_name,
         last_name,
@@ -35,6 +31,7 @@ export function ContactSaveValidator() {
         return ctx.res.status(400).send({ error: hasErrors, status: 400 })
       }
 
+      method = method.bind(this)
       method(ctx)
     }
   }

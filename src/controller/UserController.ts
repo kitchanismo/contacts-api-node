@@ -10,6 +10,8 @@ import {
 } from '../validators/userValidator'
 
 export class UserController {
+  private userRepository = getRepository(User)
+
   @RegisterValidator()
   @ExistValidator()
   async register({ req, res }: Context) {
@@ -21,7 +23,7 @@ export class UserController {
       last_name,
     } = req.body as User
 
-    const { id } = await getRepository(User)
+    const { id } = await this.userRepository
       .save({
         username,
         password: await hashPassword(password),

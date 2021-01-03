@@ -5,16 +5,19 @@ import { Context } from './../contextProps'
 import { ContactSaveValidator } from '../validators/contactValidator'
 
 export class ContactController {
+  private contactRepository = getRepository(Contact)
+  private userRepository = getRepository(User)
+
   async all({ req }: Context) {
     const { userId } = req.body
 
-    const user = await getRepository(User).findOne({ id: +userId })
+    const user = await this.userRepository.findOne({ id: +userId })
 
-    return getRepository(Contact).find({ user })
+    return this.contactRepository.find({ user })
   }
 
   async one({ req, res }: Context) {
-    const contact = await getRepository(Contact).findOne(+req.params.id)
+    const contact = await this.contactRepository.findOne(+req.params.id)
     return contact
       ? contact
       : res.status(404).send({ error: 'Not Found', status: 404 })
@@ -31,9 +34,9 @@ export class ContactController {
       is_favorite,
     } = req.body as Contact
 
-    const user = await getRepository(User).findOne({ id: +req.body.userId })
+    const user = await this.userRepository.findOne({ id: +req.body.userId })
 
-    const { id } = await getRepository(Contact)
+    const { id } = await this.contactRepository
       .save({
         first_name,
         last_name,
@@ -59,7 +62,7 @@ export class ContactController {
       is_favorite,
     } = req.body as Contact
 
-    const { affected } = await getRepository(Contact).update(req.params.id, {
+    const { affected } = await this.contactRepository.update(req.params.id, {
       first_name,
       last_name,
       phone_number,
@@ -74,11 +77,11 @@ export class ContactController {
   }
 
   async remove({ req, res }: Context) {
-    const contact = await getRepository(Contact).findOne(+req.params.id)
+    const contact = await this.contactRepository.findOne(+req.params.id)
     if (!contact)
       return res.status(404).send({ error: 'Not found', status: 404 })
 
-    await getRepository(Contact).remove(contact)
+    await this.contactRepository.remove(contact)
 
     return res.status(202).send({ status: 202, affected: +req.params.id })
   }

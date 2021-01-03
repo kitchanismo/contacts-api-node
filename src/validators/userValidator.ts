@@ -6,7 +6,7 @@ import { comparePassword } from '../utils/bcrypt'
 
 export const RegisterValidator = () => {
   return (target: any, propertyKey: string, descriptor: PropertyDescriptor) => {
-    const method = descriptor.value
+    let method = descriptor.value
     descriptor.value = function (ctx: Context) {
       const { username, password, email, first_name, last_name } = ctx.req
         .body as User
@@ -19,19 +19,15 @@ export const RegisterValidator = () => {
       if (hasErrors) {
         return ctx.res.status(400).send({ error: hasErrors, status: 400 })
       }
-
+      method = method.bind(this)
       method(ctx)
     }
   }
 }
 
-export function SignInValidator() {
-  return function (
-    target: any,
-    propertyKey: string,
-    descriptor: PropertyDescriptor,
-  ) {
-    const method = descriptor.value
+export const SignInValidator = () => {
+  return (target: any, propertyKey: string, descriptor: PropertyDescriptor) => {
+    let method = descriptor.value
     descriptor.value = async function (ctx: Context) {
       const { username, password } = ctx.req.body as User
 
@@ -50,18 +46,15 @@ export function SignInValidator() {
           .status(401)
           .send({ error: 'Invalid username or password', status: 401 })
       }
+      method = method.bind(this)
       method(ctx, user)
     }
   }
 }
 
-export function ExistValidator() {
-  return function (
-    target: any,
-    propertyKey: string,
-    descriptor: PropertyDescriptor,
-  ) {
-    const method = descriptor.value
+export const ExistValidator = () => {
+  return (target: any, propertyKey: string, descriptor: PropertyDescriptor) => {
+    let method = descriptor.value
     descriptor.value = async function (ctx: Context) {
       const repository = getRepository(User)
 
@@ -86,6 +79,8 @@ export function ExistValidator() {
           .status(400)
           .send({ error: { email: 'Email is taken!' }, status: 400 })
       }
+
+      method = method.bind(this)
 
       method(ctx)
     }
