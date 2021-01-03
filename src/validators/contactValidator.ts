@@ -34,6 +34,6 @@ export const contactSaveValidator = (
       return ctx.res.status(400).send({ error: hasErrors, status: 400 })
     }
 
-    method.call(this, ctx)
+    return method.call(this, ctx)
   }
 }

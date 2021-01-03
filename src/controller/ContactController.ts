@@ -48,7 +48,7 @@ export class ContactController {
       })
       .catch((error) => null)
 
-    return res.status(201).send({ id })
+    return { id }
   }
 
   @contactSaveValidator
@@ -73,7 +73,7 @@ export class ContactController {
 
     if (!affected) return res.status(404).send({ status: 404, affected })
 
-    return res.status(202).send({ status: 202, affected })
+    return { status: 202, affected }
   }
 
   async remove({ req, res }: Context) {
@@ -83,6 +83,6 @@ export class ContactController {
 
     await this.contactRepository.remove(contact)
 
-    return res.status(202).send({ status: 202, affected: +req.params.id })
+    return { status: 202, affected: +req.params.id }
   }
 }

@@ -22,7 +22,7 @@ export const registerValidator = (
     if (hasErrors) {
       return ctx.res.status(400).send({ error: hasErrors, status: 400 })
     }
-    method.call(this, ctx)
+    return method.call(this, ctx)
   }
 }
 
@@ -52,7 +52,7 @@ export const signInValidator = (
     }
     ctx.req.body.user = user
 
-    method.call(this, ctx)
+    return method.call(this, ctx)
   }
 }
 
@@ -87,6 +87,6 @@ export const existValidator = (
         .send({ error: { email: 'Email is taken!' }, status: 400 })
     }
 
-    method.call(this, ctx)
+    return method.call(this, ctx)
   }
 }

@@ -35,7 +35,7 @@ export class UserController {
         return { id: 0 }
       })
 
-    return res.status(201).send({ id })
+    return { id }
   }
 
   @signInValidator
@@ -44,6 +44,6 @@ export class UserController {
 
     const token = generateToken({ username, id })
 
-    return res.status(200).send({ token })
+    return { token }
   }
 }
