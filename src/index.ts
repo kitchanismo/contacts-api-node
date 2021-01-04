@@ -1,12 +1,10 @@
 require('dotenv').config()
 const cors = require('cors')
-import { Context } from './contextProps'
 import 'reflect-metadata'
 import { createConnection } from 'typeorm'
 import * as express from 'express'
 import * as bodyParser from 'body-parser'
-import { Request, Response } from 'express'
-import { Routes } from './routes'
+import { createRoute, routes } from './routes'
 import { authenticateToken } from './utils/jwt'
 
 const app = express()
@@ -18,28 +16,7 @@ const PORT: number = +process.env.PORT || 4000
 
 createConnection()
   .then(async (connection) => {
-    const createRoute = (route) => {
-      return (req: Request, res: Response, next: Function) => {
-        const result = new (route.controller as any)()[route.action]({
-          req,
-          res,
-          next,
-        } as Context)
-        if (result instanceof Promise) {
-          result.then((result) =>
-            result !== null &&
-            result !== undefined &&
-            typeof result === 'object'
-              ? res.send(result)
-              : res.send({ error: 'return method must be an object' }),
-          )
-        } else if (result !== null && result !== undefined) {
-          res.json(result)
-        }
-      }
-    }
-
-    Routes.forEach((route) => {
+    routes.forEach((route) => {
       app[route.method](
         route.path,
         authenticateToken(route.isProtected),

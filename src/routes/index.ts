@@ -1,7 +1,24 @@
+import { Context } from './../contextProps'
+import { Response, Request } from 'express'
 import { HomeController } from './../controller/HomeController'
 import { RouteProps } from './routeProps'
 import { UserController } from '../controller/UserController'
 import { ContactController } from '../controller/ContactController'
+
+export const createRoute = (route) => {
+  return (req: Request, res: Response, next: Function) => {
+    const controller = new route.controller()[route.action]({
+      req,
+      res,
+      next,
+    } as Context)
+
+    if (controller instanceof Promise) {
+      return controller.then((data) => res.send(data))
+    }
+    return res.json(controller)
+  }
+}
 
 const userRoutes: RouteProps<UserController>[] = [
   {
@@ -63,4 +80,4 @@ const homeRoute: RouteProps<HomeController> = {
   action: 'index',
 }
 
-export const Routes = [homeRoute, ...userRoutes, ...contactRoutes]
+export const routes = [homeRoute, ...userRoutes, ...contactRoutes]

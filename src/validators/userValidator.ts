@@ -50,6 +50,7 @@ export const signInValidator = (
         .status(401)
         .send({ error: 'Invalid username or password', status: 401 })
     }
+
     ctx.req.body.user = user
 
     return method.call(this, ctx)
