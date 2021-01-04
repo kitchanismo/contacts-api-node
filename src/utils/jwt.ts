@@ -1,5 +1,4 @@
 import { Response } from 'express'
-import { IContext } from '../interfaces/IContext'
 import { sign, verify } from 'jsonwebtoken'
 import { Request } from 'express'
 

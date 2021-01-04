@@ -1,10 +1,11 @@
 require('dotenv').config()
-const cors = require('cors')
+
 import 'reflect-metadata'
-import { createConnection } from 'typeorm'
+import * as cors from 'cors'
 import * as express from 'express'
 import * as bodyParser from 'body-parser'
 import { routes } from './routes'
+import { createConnection } from 'typeorm'
 import { authenticateToken } from './utils/jwt'
 import { createController } from './factories/createController'
 
@@ -17,10 +18,12 @@ const PORT: number = +process.env.PORT || 4000
 
 createConnection()
   .then(async (connection) => {
+    //dynamically creating routes
     routes.forEach((route) => {
       app[route.method](
         route.path,
         authenticateToken(route.isProtected),
+        //add middleware here
         createController(route),
       )
     })
