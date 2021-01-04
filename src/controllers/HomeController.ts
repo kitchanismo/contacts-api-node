@@ -1,9 +1,9 @@
-import { Context } from './../contextProps'
+import { IContext } from '../interfaces/IContext'
 import { getConnection } from 'typeorm'
 import { routes } from '../routes'
 
 export class HomeController {
-  async index({ res }: Context) {
+  async index({ res }: IContext) {
     const _routes = routes.map((route) => {
       return {
         method: route.method,

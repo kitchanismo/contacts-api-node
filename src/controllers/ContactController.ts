@@ -1,14 +1,14 @@
-import { Contact } from './../entity/Contact'
-import { User } from './../entity/User'
+import { Contact } from '../entities/Contact'
+import { User } from '../entities/User'
 import { getRepository } from 'typeorm'
-import { Context } from './../contextProps'
+import { IContext } from '../interfaces/IContext'
 import { contactSaveValidator } from '../validators/contactValidator'
 
 export class ContactController {
   private contactRepository = getRepository(Contact)
   private userRepository = getRepository(User)
 
-  async all({ req }: Context) {
+  async all({ req }: IContext) {
     const { userId } = req.body
 
     const user = await this.userRepository.findOne({ id: +userId })
@@ -16,7 +16,7 @@ export class ContactController {
     return this.contactRepository.find({ user })
   }
 
-  async one({ req, res }: Context) {
+  async one({ req, res }: IContext) {
     const contact = await this.contactRepository.findOne(+req.params.id)
     return contact
       ? contact
@@ -24,7 +24,7 @@ export class ContactController {
   }
 
   @contactSaveValidator
-  async save({ req, res }: Context) {
+  async save({ req, res }: IContext) {
     const {
       first_name,
       last_name,
@@ -52,7 +52,7 @@ export class ContactController {
   }
 
   @contactSaveValidator
-  async update({ req, res }: Context) {
+  async update({ req, res }: IContext) {
     const {
       first_name,
       last_name,
@@ -76,7 +76,7 @@ export class ContactController {
     return { status: 202, affected }
   }
 
-  async remove({ req, res }: Context) {
+  async remove({ req, res }: IContext) {
     const contact = await this.contactRepository.findOne(+req.params.id)
     if (!contact)
       return res.status(404).send({ error: 'Not found', status: 404 })

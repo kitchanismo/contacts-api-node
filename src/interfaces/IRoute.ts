@@ -1,6 +1,6 @@
 import { EntityTarget } from 'typeorm'
 
-export interface RouteProps<T> {
+export interface IRoute<T> {
   method: 'get' | 'post' | 'put' | 'patch' | 'delete'
   path: string
   controller: EntityTarget<T>

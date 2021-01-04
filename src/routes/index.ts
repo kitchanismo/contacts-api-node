@@ -1,26 +1,9 @@
-import { Context } from './../contextProps'
-import { Response, Request } from 'express'
-import { HomeController } from './../controller/HomeController'
-import { RouteProps } from './routeProps'
-import { UserController } from '../controller/UserController'
-import { ContactController } from '../controller/ContactController'
+import { HomeController } from '../controllers/HomeController'
+import { IRoute } from '../interfaces/IRoute'
+import { UserController } from '../controllers/UserController'
+import { ContactController } from '../controllers/ContactController'
 
-export const createRoute = (route) => {
-  return (req: Request, res: Response, next: Function) => {
-    const controller = new route.controller()[route.action]({
-      req,
-      res,
-      next,
-    } as Context)
-
-    if (controller instanceof Promise) {
-      return controller.then((data) => res.send(data))
-    }
-    return res.json(controller)
-  }
-}
-
-const userRoutes: RouteProps<UserController>[] = [
+const userRoutes: IRoute<UserController>[] = [
   {
     method: 'post',
     path: '/api/auth/register',
@@ -35,7 +18,7 @@ const userRoutes: RouteProps<UserController>[] = [
   },
 ]
 
-const contactRoutes: RouteProps<ContactController>[] = [
+const contactRoutes: IRoute<ContactController>[] = [
   {
     method: 'get',
     path: '/api/contacts',
@@ -73,7 +56,7 @@ const contactRoutes: RouteProps<ContactController>[] = [
   },
 ]
 
-const homeRoute: RouteProps<HomeController> = {
+const homeRoute: IRoute<HomeController> = {
   method: 'get',
   path: '/',
   controller: HomeController,

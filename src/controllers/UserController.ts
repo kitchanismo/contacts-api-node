@@ -1,8 +1,8 @@
-import { hashPassword } from './../utils/bcrypt'
-import { generateToken } from './../utils/jwt'
+import { hashPassword } from '../utils/bcrypt'
+import { generateToken } from '../utils/jwt'
 import { getRepository, QueryFailedError } from 'typeorm'
-import { Context } from './../contextProps'
-import { User } from '../entity/User'
+import { IContext } from '../interfaces/IContext'
+import { User } from '../entities/User'
 import {
   registerValidator,
   existValidator,
@@ -14,7 +14,7 @@ export class UserController {
 
   @registerValidator
   @existValidator
-  async register({ req, res }: Context) {
+  async register({ req, res }: IContext) {
     const {
       username,
       password,
@@ -39,7 +39,7 @@ export class UserController {
   }
 
   @signInValidator
-  async signin({ req, res }: Context) {
+  async signin({ req, res }: IContext) {
     const { username, id } = req.body.user
 
     const token = generateToken({ username, id })

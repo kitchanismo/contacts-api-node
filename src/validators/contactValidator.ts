@@ -1,6 +1,6 @@
-import { Contact } from './../entity/Contact'
+import { Contact } from '../entities/Contact'
 import { onValidate } from '../utils/joi'
-import { Context } from './../contextProps'
+import { IContext } from '../interfaces/IContext'
 
 export const contactSaveValidator = (
   target: any,
@@ -8,7 +8,7 @@ export const contactSaveValidator = (
   descriptor: PropertyDescriptor,
 ) => {
   let method = descriptor.value
-  descriptor.value = function (ctx: Context) {
+  descriptor.value = function (ctx: IContext) {
     const {
       first_name,
       last_name,

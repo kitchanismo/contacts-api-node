@@ -1,5 +1,5 @@
-import { User } from './../entity/User'
-import { Context } from './../contextProps'
+import { User } from '../entities/User'
+import { IContext } from '../interfaces/IContext'
 import { onValidate } from '../utils/joi'
 import { getRepository } from 'typeorm'
 import { comparePassword } from '../utils/bcrypt'
@@ -10,7 +10,7 @@ export const registerValidator = (
   descriptor: PropertyDescriptor,
 ) => {
   let method = descriptor.value
-  descriptor.value = function (ctx: Context) {
+  descriptor.value = function (ctx: IContext) {
     const { username, password, email, first_name, last_name } = ctx.req
       .body as User
 
@@ -32,7 +32,7 @@ export const signInValidator = (
   descriptor: PropertyDescriptor,
 ) => {
   let method = descriptor.value
-  descriptor.value = async function (ctx: Context) {
+  descriptor.value = async function (ctx: IContext) {
     const { username, password } = ctx.req.body as User
 
     const hasErrors = onValidate({ username, password }, User.schemaSignIn)
@@ -63,7 +63,7 @@ export const existValidator = (
   descriptor: PropertyDescriptor,
 ) => {
   let method = descriptor.value
-  descriptor.value = async function (ctx: Context) {
+  descriptor.value = async function (ctx: IContext) {
     const repository = getRepository(User)
 
     const { username, email } = ctx.req.body as User

@@ -4,8 +4,9 @@ import 'reflect-metadata'
 import { createConnection } from 'typeorm'
 import * as express from 'express'
 import * as bodyParser from 'body-parser'
-import { createRoute, routes } from './routes'
+import { routes } from './routes'
 import { authenticateToken } from './utils/jwt'
+import { createController } from './factories/createController'
 
 const app = express()
 
@@ -20,7 +21,7 @@ createConnection()
       app[route.method](
         route.path,
         authenticateToken(route.isProtected),
-        createRoute(route),
+        createController(route),
       )
     })
 
