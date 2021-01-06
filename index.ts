@@ -4,10 +4,10 @@ import 'reflect-metadata'
 import * as cors from 'cors'
 import * as express from 'express'
 import * as bodyParser from 'body-parser'
-import { routes } from './routes'
+import { routes } from './src/routes'
 import { createConnection } from 'typeorm'
-import { authenticateToken } from './utils/jwt'
-import { createController } from './factories/createController'
+import { authenticateToken } from './src/utils/jwt'
+import { createController } from './src/factories/createController'
 
 const app = express()
 
