@@ -14,7 +14,7 @@ const app = express()
 app.use(bodyParser.json())
 app.use(cors())
 
-const PORT: number = +process.env.PORT || 4000
+const PORT: number = +process.env.PORT || 5000
 
 createConnection()
   .then(async (connection) => {

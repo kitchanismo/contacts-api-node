@@ -67,15 +67,14 @@ export class AuthController {
       refreshToken,
       process.env.JWT_KEY,
       (error: any, data: any) => {
-        if (error) return res.sendStatus(403)
+        if (error) return res.sendStatus(401)
 
         return this.tokenRepository
           .findOne({ token: refreshToken })
           .then((token) => {
-            console.log('hey:', token)
-            if (!token) return res.sendStatus(403)
+            if (!token) return res.sendStatus(401)
 
-            return { accessToken: generateAccessToken(data) }
+            return { accessToken: generateAccessToken(data.data) }
           })
       },
     )
