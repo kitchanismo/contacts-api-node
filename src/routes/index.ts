@@ -3,7 +3,7 @@ import { IRoute } from '../interfaces/IRoute'
 import { AuthController } from '../controllers/AuthController'
 import { ContactController } from '../controllers/ContactController'
 
-const userRoutes: IRoute<AuthController>[] = [
+const authRoutes: IRoute<AuthController>[] = [
   {
     method: 'post',
     path: '/api/auth/register',
@@ -15,6 +15,12 @@ const userRoutes: IRoute<AuthController>[] = [
     path: '/api/auth/login',
     controller: AuthController,
     action: 'signin',
+  },
+  {
+    method: 'post',
+    path: '/api/auth/refresh-token',
+    controller: AuthController,
+    action: 'refreshToken',
   },
 ]
 
@@ -63,4 +69,4 @@ const homeRoute: IRoute<HomeController> = {
   action: 'index',
 }
 
-export const routes = [homeRoute, ...userRoutes, ...contactRoutes]
+export const routes = [homeRoute, ...authRoutes, ...contactRoutes]

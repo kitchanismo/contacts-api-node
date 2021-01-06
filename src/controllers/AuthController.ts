@@ -1,5 +1,8 @@
+import * as jwt from 'jsonwebtoken'
+import { Token } from './../entities/Token'
+import { generateRefreshToken } from './../utils/jwt'
 import { hashPassword } from '../utils/bcrypt'
-import { generateToken } from '../utils/jwt'
+import { generateAccessToken } from '../utils/jwt'
 import { getRepository, QueryFailedError } from 'typeorm'
 import { IContext } from '../interfaces/IContext'
 import { User } from '../entities/User'
@@ -10,7 +13,8 @@ import {
 } from '../validators/userValidator'
 
 export class AuthController {
-  private authRepository = getRepository(User)
+  private userRepository = getRepository(User)
+  private tokenRepository = getRepository(Token)
 
   @registerValidator
   @existValidator
@@ -23,7 +27,7 @@ export class AuthController {
       last_name,
     } = req.body as User
 
-    const { id } = await this.authRepository
+    const { id } = await this.userRepository
       .save({
         username,
         password: await hashPassword(password),
@@ -42,8 +46,38 @@ export class AuthController {
   async signin({ req, res }: IContext) {
     const { username, id } = req.body.user
 
-    const token = generateToken({ username, id })
+    const accessToken = generateAccessToken({ username, id })
 
-    return { token }
+    const refreshToken = generateRefreshToken({ username, id })
+
+    await this.tokenRepository.save({
+      token: refreshToken,
+      user: req.body.user,
+    })
+
+    return { accessToken, refreshToken }
+  }
+
+  async refreshToken({ res, req }: IContext) {
+    const refreshToken = req.body.refreshToken
+
+    if (!refreshToken) return res.sendStatus(401)
+
+    return jwt.verify(
+      refreshToken,
+      process.env.JWT_KEY,
+      (error: any, data: any) => {
+        if (error) return res.sendStatus(403)
+
+        return this.tokenRepository
+          .findOne({ token: refreshToken })
+          .then((token) => {
+            console.log('hey:', token)
+            if (!token) return res.sendStatus(403)
+
+            return { accessToken: generateAccessToken(data) }
+          })
+      },
+    )
   }
 }
