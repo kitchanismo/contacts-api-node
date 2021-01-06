@@ -1,19 +1,19 @@
 import { HomeController } from '../controllers/HomeController'
 import { IRoute } from '../interfaces/IRoute'
-import { UserController } from '../controllers/UserController'
+import { AuthController } from '../controllers/AuthController'
 import { ContactController } from '../controllers/ContactController'
 
-const userRoutes: IRoute<UserController>[] = [
+const userRoutes: IRoute<AuthController>[] = [
   {
     method: 'post',
     path: '/api/auth/register',
-    controller: UserController,
+    controller: AuthController,
     action: 'register',
   },
   {
     method: 'post',
     path: '/api/auth/login',
-    controller: UserController,
+    controller: AuthController,
     action: 'signin',
   },
 ]

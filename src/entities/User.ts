@@ -1,3 +1,4 @@
+import { Token } from './Token'
 import {
   Entity,
   PrimaryGeneratedColumn,
@@ -33,6 +34,9 @@ export class User {
 
   @OneToMany((type) => Contact, (contact) => contact.user)
   contacts: Contact[]
+
+  @OneToMany((type) => Token, (token) => token.token)
+  tokens: Token[]
 
   static schemaSignIn = {
     username: Joi.string()
