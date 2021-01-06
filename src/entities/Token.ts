@@ -16,6 +16,7 @@ export class Token {
   @PrimaryGeneratedColumn()
   id: number
 
+  @Index({ unique: true })
   @Column()
   token: string
 

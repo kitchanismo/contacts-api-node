@@ -58,6 +58,21 @@ export class AuthController {
     return { accessToken, refreshToken }
   }
 
+  async signout({ req, res }: IContext) {
+    const { affected } = await this.tokenRepository.delete({
+      token: req.body.refreshToken,
+    })
+    return { affected }
+  }
+
+  async signoutAll({ req, res }: IContext) {
+    const user = await this.userRepository.findOne({ id: req.body.userId })
+    const { affected } = await this.tokenRepository.delete({
+      user,
+    })
+    return { affected }
+  }
+
   async refreshToken({ res, req }: IContext) {
     const refreshToken = req.body.refreshToken
 

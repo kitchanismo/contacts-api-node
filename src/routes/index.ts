@@ -22,6 +22,20 @@ const authRoutes: IRoute<AuthController>[] = [
     controller: AuthController,
     action: 'refreshToken',
   },
+  {
+    method: 'post',
+    path: '/api/auth/signout',
+    controller: AuthController,
+    action: 'signout',
+    isProtected: true,
+  },
+  {
+    method: 'get',
+    path: '/api/auth/signout-all',
+    controller: AuthController,
+    action: 'signoutAll',
+    isProtected: true,
+  },
 ]
 
 const contactRoutes: IRoute<ContactController>[] = [
