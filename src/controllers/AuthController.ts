@@ -65,7 +65,17 @@ export class AuthController {
     const { affected } = await this.tokenRepository.delete({
       token: req.cookies.refreshToken,
     })
-    return { affected }
+
+    res.cookie('accessToken', '', {
+      httpOnly: true,
+      expires: new Date(Date.now()),
+    })
+    res.cookie('refreshToken', '', {
+      httpOnly: true,
+      expires: new Date(Date.now()),
+    })
+
+    return res.send({ affected })
   }
 
   async signoutAll({ req, res }: IContext) {
@@ -73,6 +83,16 @@ export class AuthController {
     const { affected } = await this.tokenRepository.delete({
       user,
     })
+
+    res.cookie('accessToken', '', {
+      httpOnly: true,
+      expires: new Date(Date.now()),
+    })
+    res.cookie('refreshToken', '', {
+      httpOnly: true,
+      expires: new Date(Date.now()),
+    })
+
     return { affected }
   }
 

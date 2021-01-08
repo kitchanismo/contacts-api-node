@@ -14,7 +14,12 @@ const app = express()
 
 app.use(cookieParser())
 app.use(bodyParser.json())
-app.use(cors())
+app.use(
+  cors({
+    origin: 'http://localhost:3000',
+    credentials: true,
+  }),
+)
 
 const PORT: number = +process.env.PORT || 5000
 
