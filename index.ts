@@ -12,14 +12,22 @@ import { createController } from './src/factories/createController'
 
 const app = express()
 
+const whitelist =
+  process.env.NODE_ENV === 'production'
+    ? ['https://kitchan-contacts.netlify.app']
+    : ['http://localhost:3000']
+
 app.use(cookieParser())
 app.use(bodyParser.json())
 app.use(
   cors({
-    origin:
-      process.env.NODE_ENV === 'development'
-        ? 'http://localhost:3000'
-        : 'https://kitchan-contacts.netlify.app',
+    origin: function (origin, callback) {
+      if (whitelist.indexOf(origin) !== -1) {
+        callback(null, true)
+      } else {
+        callback(new Error('Not allowed by CORS'))
+      }
+    },
     credentials: true,
   }),
 )

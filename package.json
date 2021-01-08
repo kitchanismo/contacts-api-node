@@ -27,6 +27,7 @@
    "scripts": {
       "start": "ts-node index.ts",
       "watch": "nodemon --exec ts-node -- index.ts",
+      "build": "./node_modules/.bin/tsc --build C:/Users/kitchan/Desktop/node-stuff/express-typeorm/typeorm-express-sample/",
       "migration:run": "ts-node ./node_modules/typeorm/cli.js migration:run"
    },
    "engines": {
