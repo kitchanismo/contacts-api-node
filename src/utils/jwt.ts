@@ -8,7 +8,7 @@ export const generateAccessToken = (user: { username: string; id: number }) =>
       data: user,
     },
     process.env.JWT_KEY, //to be in env
-    { expiresIn: '1m' },
+    { expiresIn: '10m' },
   )
 
 export const generateRefreshToken = (user: { username: string; id: number }) =>
