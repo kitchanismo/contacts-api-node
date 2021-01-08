@@ -4,6 +4,7 @@ import 'reflect-metadata'
 import * as cors from 'cors'
 import * as express from 'express'
 import * as bodyParser from 'body-parser'
+import * as cookieParser from 'cookie-parser'
 import { routes } from './src/routes'
 import { createConnection } from 'typeorm'
 import { authenticateToken } from './src/utils/jwt'
@@ -11,6 +12,7 @@ import { createController } from './src/factories/createController'
 
 const app = express()
 
+app.use(cookieParser())
 app.use(bodyParser.json())
 app.use(cors())
 

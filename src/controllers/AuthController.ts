@@ -55,12 +55,15 @@ export class AuthController {
       user: req.body.user,
     })
 
-    return { accessToken, refreshToken }
+    res.cookie('accessToken', accessToken, { httpOnly: true })
+    res.cookie('refreshToken', refreshToken, { httpOnly: true })
+
+    return { message: 'tokens sent' }
   }
 
   async signout({ req, res }: IContext) {
     const { affected } = await this.tokenRepository.delete({
-      token: req.body.refreshToken,
+      token: req.cookies.refreshToken,
     })
     return { affected }
   }
@@ -73,8 +76,13 @@ export class AuthController {
     return { affected }
   }
 
+  async me({ req, res }: IContext) {
+    const decoded: any = jwt.decode(req.cookies.refreshToken)
+    return decoded ? { ...decoded.data } : res.status(401)
+  }
+
   async refreshToken({ res, req }: IContext) {
-    const refreshToken = req.body.refreshToken
+    const refreshToken = req.cookies.refreshToken
 
     if (!refreshToken) return res.sendStatus(401)
 
@@ -89,7 +97,10 @@ export class AuthController {
           .then((token) => {
             if (!token) return res.sendStatus(401)
 
-            return { accessToken: generateAccessToken(data.data) }
+            res.cookie('accessToken', generateAccessToken(data.data), {
+              httpOnly: true,
+            })
+            return { message: 'tokens sent' }
           })
       },
     )

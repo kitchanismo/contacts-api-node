@@ -17,13 +17,13 @@ const authRoutes: IRoute<AuthController>[] = [
     action: 'signin',
   },
   {
-    method: 'post',
+    method: 'get',
     path: '/api/auth/refresh-token',
     controller: AuthController,
     action: 'refreshToken',
   },
   {
-    method: 'post',
+    method: 'get',
     path: '/api/auth/signout',
     controller: AuthController,
     action: 'signout',
@@ -34,6 +34,13 @@ const authRoutes: IRoute<AuthController>[] = [
     path: '/api/auth/signout-all',
     controller: AuthController,
     action: 'signoutAll',
+    isProtected: true,
+  },
+  {
+    method: 'get',
+    path: '/api/auth/me',
+    controller: AuthController,
+    action: 'me',
     isProtected: true,
   },
 ]
