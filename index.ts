@@ -15,7 +15,10 @@ const app = express()
 app.use(cookieParser())
 app.use(bodyParser.json())
 
-const whitelist = ['https://kitchan-contacts.netlify.app']
+const whitelist =
+  process.env.NODE_ENV === 'production'
+    ? ['https://kitchan-contacts.netlify.app']
+    : ['http://localhost:3000']
 
 app.use(
   cors({

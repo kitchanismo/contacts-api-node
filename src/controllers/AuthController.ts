@@ -58,7 +58,7 @@ export class AuthController {
     res.cookie('accessToken', accessToken, { httpOnly: true })
     res.cookie('refreshToken', refreshToken, { httpOnly: true })
 
-    return { message: 'tokens sent' }
+    return res.status(200).send({ message: 'tokens sent' })
   }
 
   async signout({ req, res }: IContext) {
@@ -98,7 +98,7 @@ export class AuthController {
 
   async me({ req, res }: IContext) {
     const decoded: any = jwt.decode(req.cookies.refreshToken)
-    return decoded ? { ...decoded.data } : res.status(401)
+    return decoded ? { ...decoded.data } : res.status(401).send({ error: 'me' })
   }
 
   async refreshToken({ res, req }: IContext) {
@@ -120,7 +120,7 @@ export class AuthController {
             res.cookie('accessToken', generateAccessToken(data.data), {
               httpOnly: true,
             })
-            return { message: 'tokens sent' }
+            return res.status(200).send({ message: 'tokens sent' })
           })
       },
     )

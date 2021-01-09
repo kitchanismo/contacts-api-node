@@ -26,14 +26,14 @@ export const authenticateToken = (isProtected: boolean) => {
 
     const accessToken = req.cookies.accessToken
 
-    if (accessToken == null) return res.sendStatus(401)
+    if (accessToken == null) return res.status(401).send({ error: 'token' })
 
     verify(accessToken, process.env.JWT_KEY, (error: any, data: any) => {
       if (error) {
         if (error.name === 'TokenExpiredError')
           return res.status(403).send(error.name)
 
-        return res.sendStatus(401)
+        return res.status(401).send({ error: 'auth' })
       }
       req.body.userId = data.data.id
       next()
