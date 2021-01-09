@@ -58,7 +58,7 @@ export class AuthController {
     res.cookie('accessToken', accessToken, { httpOnly: true })
     res.cookie('refreshToken', refreshToken, { httpOnly: true })
 
-    return { message: 'tokens sent' }
+    return { message: 'jwt has set in cookie' }
   }
 
   async signout({ req, res }: IContext) {
@@ -120,7 +120,7 @@ export class AuthController {
             res.cookie('accessToken', generateAccessToken(data.data), {
               httpOnly: true,
             })
-            return { message: 'tokens sent' }
+            return { message: 'jwt has set in cookie' }
           })
       },
     )

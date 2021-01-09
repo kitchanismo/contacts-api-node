@@ -12,25 +12,25 @@ import { createController } from './src/factories/createController'
 
 const app = express()
 
-const whitelist =
-  process.env.NODE_ENV === 'production'
-    ? ['https://kitchan-contacts.netlify.app']
-    : ['http://localhost:3000']
-
 app.use(cookieParser())
 app.use(bodyParser.json())
-app.use(
-  cors({
-    origin: function (origin, callback) {
-      if (whitelist.indexOf(origin) !== -1) {
-        callback(null, true)
-      } else {
-        callback(new Error('Not allowed by CORS'))
-      }
-    },
-    credentials: true,
-  }),
-)
+
+const whitelist = ['https://kitchan-contacts.netlify.app']
+
+process.env.NODE_ENV === 'production'
+  ? app.use(
+      cors({
+        origin: function (origin, callback) {
+          if (whitelist.indexOf(origin) !== -1) {
+            callback(null, true)
+          } else {
+            callback(new Error('Not allowed by CORS'))
+          }
+        },
+        credentials: true,
+      }),
+    )
+  : app.use(cors())
 
 const PORT: number = +process.env.PORT || 5000
 
