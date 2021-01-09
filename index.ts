@@ -17,20 +17,18 @@ app.use(bodyParser.json())
 
 const whitelist = ['https://kitchan-contacts.netlify.app']
 
-process.env.NODE_ENV === 'production'
-  ? app.use(
-      cors({
-        origin: function (origin, callback) {
-          if (whitelist.indexOf(origin) !== -1) {
-            callback(null, true)
-          } else {
-            callback(new Error('Not allowed by CORS'))
-          }
-        },
-        credentials: true,
-      }),
-    )
-  : app.use(cors())
+app.use(
+  cors({
+    origin: function (origin, callback) {
+      if (whitelist.indexOf(origin) !== -1) {
+        callback(null, true)
+      } else {
+        callback(new Error('Not allowed by CORS'))
+      }
+    },
+    credentials: true,
+  }),
+)
 
 const PORT: number = +process.env.PORT || 5000
 
