@@ -3,7 +3,7 @@ import { Token } from './../entities/Token'
 import { generateRefreshToken } from './../utils/jwt'
 import { hashPassword } from '../utils/bcrypt'
 import { generateAccessToken } from '../utils/jwt'
-import { getRepository, QueryFailedError } from 'typeorm'
+import { getRepository, QueryFailedError, Repository } from 'typeorm'
 import { IContext } from '../interfaces/IContext'
 import { User } from '../entities/User'
 import {
@@ -58,7 +58,7 @@ export class AuthController {
     res.cookie('accessToken', accessToken, { httpOnly: true })
     res.cookie('refreshToken', refreshToken, { httpOnly: true })
 
-    return { message: 'jwt has set in cookie' }
+    return { message: 'tokens sent' }
   }
 
   async signout({ req, res }: IContext) {
@@ -120,7 +120,7 @@ export class AuthController {
             res.cookie('accessToken', generateAccessToken(data.data), {
               httpOnly: true,
             })
-            return { message: 'jwt has set in cookie' }
+            return { message: 'tokens sent' }
           })
       },
     )
