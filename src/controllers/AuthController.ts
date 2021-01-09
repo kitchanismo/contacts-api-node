@@ -45,8 +45,8 @@ export class AuthController {
 
   cookieOptions: CookieOptions = {
     httpOnly: true,
-    sameSite: 'none',
-    secure: true,
+    sameSite: process.env.NODE_ENV === 'production' ? 'none' : true,
+    secure: process.env.NODE_ENV === 'production' ? true : false,
   }
 
   @signInValidator
@@ -65,7 +65,7 @@ export class AuthController {
     res.cookie('accessToken', accessToken, this.cookieOptions)
     res.cookie('refreshToken', refreshToken, this.cookieOptions)
 
-    return res.status(200).send({ message: 'tokens sent' })
+    return res.status(200).send({ message: 'tokens are set' })
   }
 
   async signout({ req, res }: IContext) {
@@ -129,7 +129,7 @@ export class AuthController {
               generateAccessToken(data.data),
               this.cookieOptions,
             )
-            return res.status(200).send({ message: 'tokens sent' })
+            return res.status(200).send({ message: 'tokens are set' })
           })
       },
     )

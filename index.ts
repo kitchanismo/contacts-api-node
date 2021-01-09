@@ -20,18 +20,20 @@ const whitelist =
     ? ['https://kitchan-contacts.netlify.app']
     : ['http://localhost:3000']
 
-app.use(
-  cors({
-    origin: function (origin, callback) {
-      if (whitelist.indexOf(origin) !== -1) {
-        callback(null, true)
-      } else {
-        callback(new Error('Not allowed by CORS'))
-      }
-    },
-    credentials: true,
-  }),
-)
+process.env.NODE_ENV === 'production'
+  ? app.use(
+      cors({
+        origin: function (origin, callback) {
+          if (whitelist.indexOf(origin) !== -1) {
+            callback(null, true)
+          } else {
+            callback(new Error('Not allowed by CORS'))
+          }
+        },
+        credentials: true,
+      }),
+    )
+  : app.use(cors())
 
 const PORT: number = +process.env.PORT || 5000
 

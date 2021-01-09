@@ -8,7 +8,7 @@ export const generateAccessToken = (user: { username: string; id: number }) =>
       data: user,
     },
     process.env.JWT_KEY, //to be in env
-    { expiresIn: '10m' },
+    { expiresIn: '5m' },
   )
 
 export const generateRefreshToken = (user: { username: string; id: number }) =>
@@ -26,14 +26,15 @@ export const authenticateToken = (isProtected: boolean) => {
 
     const accessToken = req.cookies.accessToken
 
-    if (accessToken == null) return res.status(401).send({ error: 'token' })
+    if (accessToken == null)
+      return res.status(401).send({ error: 'tokens are not set' })
 
     verify(accessToken, process.env.JWT_KEY, (error: any, data: any) => {
       if (error) {
         if (error.name === 'TokenExpiredError')
           return res.status(403).send(error.name)
 
-        return res.status(401).send({ error: 'auth' })
+        return res.status(401).send({ error: 'tokens are dirty' })
       }
       req.body.userId = data.data.id
       next()
