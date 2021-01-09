@@ -24,8 +24,6 @@ export const authenticateToken = (isProtected: boolean) => {
   return (req: Request, res: Response, next: Function) => {
     if (!isProtected) return next()
 
-    console.log('cookies:', req.cookies.accessToken)
-
     const accessToken = req.cookies.accessToken
 
     if (accessToken == null) return res.status(401).send({ error: 'token' })

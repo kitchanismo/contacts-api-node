@@ -55,8 +55,8 @@ export class AuthController {
       user: req.body.user,
     })
 
-    res.cookie('accessToken', accessToken, { httpOnly: false })
-    res.cookie('refreshToken', refreshToken, { httpOnly: false })
+    res.cookie('accessToken', accessToken, { httpOnly: true })
+    res.cookie('refreshToken', refreshToken, { httpOnly: true })
 
     return res.status(200).send({ message: 'tokens sent' })
   }
@@ -67,11 +67,11 @@ export class AuthController {
     })
 
     res.cookie('accessToken', '', {
-      httpOnly: false,
+      httpOnly: true,
       expires: new Date(Date.now()),
     })
     res.cookie('refreshToken', '', {
-      httpOnly: false,
+      httpOnly: true,
       expires: new Date(Date.now()),
     })
 
