@@ -11,6 +11,7 @@ import {
   existValidator,
   signInValidator,
 } from '../validators/userValidator'
+import { CookieOptions } from 'express'
 
 export class AuthController {
   private userRepository = getRepository(User)
@@ -42,6 +43,12 @@ export class AuthController {
     return { id }
   }
 
+  cookieOptions: CookieOptions = {
+    httpOnly: true,
+    sameSite: 'none',
+    secure: true,
+  }
+
   @signInValidator
   async signin({ req, res }: IContext) {
     const { username, id } = req.body.user
@@ -55,8 +62,8 @@ export class AuthController {
       user: req.body.user,
     })
 
-    res.cookie('accessToken', accessToken, { httpOnly: true })
-    res.cookie('refreshToken', refreshToken, { httpOnly: true })
+    res.cookie('accessToken', accessToken, this.cookieOptions)
+    res.cookie('refreshToken', refreshToken, this.cookieOptions)
 
     return res.status(200).send({ message: 'tokens sent' })
   }
@@ -67,11 +74,11 @@ export class AuthController {
     })
 
     res.cookie('accessToken', '', {
-      httpOnly: true,
+      ...this.cookieOptions,
       expires: new Date(Date.now()),
     })
     res.cookie('refreshToken', '', {
-      httpOnly: true,
+      ...this.cookieOptions,
       expires: new Date(Date.now()),
     })
 
@@ -85,11 +92,11 @@ export class AuthController {
     })
 
     res.cookie('accessToken', '', {
-      httpOnly: true,
+      ...this.cookieOptions,
       expires: new Date(Date.now()),
     })
     res.cookie('refreshToken', '', {
-      httpOnly: true,
+      ...this.cookieOptions,
       expires: new Date(Date.now()),
     })
 
@@ -117,9 +124,11 @@ export class AuthController {
           .then((token) => {
             if (!token) return res.sendStatus(401)
 
-            res.cookie('accessToken', generateAccessToken(data.data), {
-              httpOnly: true,
-            })
+            res.cookie(
+              'accessToken',
+              generateAccessToken(data.data),
+              this.cookieOptions,
+            )
             return res.status(200).send({ message: 'tokens sent' })
           })
       },
