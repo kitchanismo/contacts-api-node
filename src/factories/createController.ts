@@ -12,7 +12,9 @@ export const createController = (route) => {
     } as IContext)
 
     if (controller instanceof Promise) {
-      return controller.then((data) => res.send(data))
+      return controller
+        .then((data) => res.send(data))
+        .catch((error) => res.status(401).send({ error: error.message }))
     }
     return res.json(controller)
   }

@@ -26,7 +26,7 @@ export const authenticateToken = (isProtected: boolean) => {
 
     const accessToken = req.cookies.accessToken
 
-    if (accessToken == null)
+    if (!accessToken)
       return res.status(401).send({ error: 'tokens are not set' })
 
     verify(accessToken, process.env.JWT_KEY, (error: any, data: any) => {
