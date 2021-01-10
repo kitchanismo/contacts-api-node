@@ -37,7 +37,6 @@ const PORT: number = +process.env.PORT || 5000
 
 createConnection()
   .then(async (connection) => {
-    //dynamically creating routes
     routes.forEach((route) => {
       app[route.method](
         route.path,
@@ -47,9 +46,9 @@ createConnection()
       )
     })
 
-    app.listen(PORT)
-
-    console.log(`Listening on http://${process.env.TYPEORM_HOST}:${PORT}`)
+    app.listen(PORT, () => {
+      console.log(`Listening on http://${process.env.TYPEORM_HOST}:${PORT}`)
+    })
   })
   .catch((error) => {
     console.log(error.message)
