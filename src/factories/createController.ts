@@ -1,5 +1,3 @@
-import { EntityTarget } from 'typeorm'
-import { IRoute } from '../interfaces/IRoute'
 import { IContext } from '../interfaces/IContext'
 import { Response, Request } from 'express'
 

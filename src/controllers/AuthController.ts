@@ -65,7 +65,7 @@ export class AuthController {
     res.cookie('accessToken', accessToken, this.cookieOptions)
     res.cookie('refreshToken', refreshToken, this.cookieOptions)
 
-    return res.status(200).send({ message: 'tokens are set' })
+    return res.status(200).send({ username })
   }
 
   async signout({ req, res }: IContext) {
