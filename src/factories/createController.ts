@@ -5,17 +5,17 @@ import { Response, Request } from 'express'
 
 export const createController = (route) => {
   return (req: Request, res: Response, next: Function) => {
-    const controller = new route.controller()[route.action]({
+    const action = new route.controller()[route.action]({
       req,
       res,
       next,
     } as IContext)
 
-    if (controller instanceof Promise) {
-      return controller
+    if (action instanceof Promise) {
+      return action
         .then((data) => res.send(data))
         .catch((error) => res.status(401).send({ error: error.message }))
     }
-    return res.json(controller)
+    return res.json(action)
   }
 }
